@@ -17,6 +17,8 @@ import {
     updateEvent,
     deleteEvent
 } from '../services/googleCalendar.js';
+import {createHotelBooking, CreateHotelBookingSchema} from "../tools/calendar/booking.js";
+import {createServiceRequest, CreateServiceRequestSchema} from "../tools/calendar/services.js";
 
 /**
  * Formats a list of calendars into a user-friendly string.
@@ -145,6 +147,17 @@ export async function handleCallTool(request: typeof CallToolRequestSchema._type
                         text: `Event deleted successfully`,
                     }],
                 };
+            }
+
+            // Hotel-specific handlers
+            case "create-hotel-booking": {
+                const validArgs = CreateHotelBookingSchema.parse(args);
+                return await createHotelBooking(validArgs, oauth2Client);
+            }
+
+            case "create-service-request": {
+                const validArgs = CreateServiceRequestSchema.parse(args);
+                return await createServiceRequest(validArgs, oauth2Client);
             }
 
             default:
